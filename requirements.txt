@@ -1,0 +1,7 @@
+# Requirements for the FastAPI application
+fastapi
+uvicorn[standard]
+
+# Requirements for AI Development
+google-genai
+

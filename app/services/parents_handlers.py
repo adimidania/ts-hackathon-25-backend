@@ -35,28 +35,77 @@ async def login(email: str, password: str):
         "msg": "Login success"
         }
 
+from bson import ObjectId
+def serialize_story(story: dict):
+    """Convert all ObjectId fields to string for JSON serialization"""
+    story["_id"] = str(story["_id"])
+    if "pictures" in story:
+        story["pictures"] = [str(p) for p in story["pictures"]]
+    if "audio" in story and isinstance(story["audio"], ObjectId):
+        story["audio"] = str(story["audio"])
+    return story
 
-async def get_parent_stories(parent_id: str):
-    parent = await db.parents.find_one({"_id": parent_id})
-    story_ids = parent.get("stories", [])
-    stories = await db.stories.find({"_id": {"$in": story_ids}}).to_list(len(story_ids))
-    return stories
-async def get_parent_drafts(parent_id: str):
-    parent = await db.parents.find_one({"_id": parent_id})
-    draft_ids = parent.get("drafts", [])
-    drafts = await db.stories.find({"_id": {"$in": draft_ids}}).to_list(len(draft_ids))
-    return drafts
+def convert_to_objectid_list(ids):
+    """Safely convert a list of strings/ObjectIds to ObjectIds"""
+    object_ids = []
+    for i in ids:
+        if isinstance(i, ObjectId):
+            object_ids.append(i)
+        elif isinstance(i, str) and ObjectId.is_valid(i):
+            object_ids.append(ObjectId(i))
+    return object_ids
+
+async def get_parent_stories(email: str):
+    parent = await db.parents.find_one({"email": email})
+    if not parent:
+        raise ParentNotFound("Parent not found")
+
+    story_ids = convert_to_objectid_list(parent.get("stories", []))
+    print(story_ids)
+
+    stories = await db.stories.find({
+        "_id": {"$in": story_ids},
+        "is_draft": False
+    }).to_list(len(story_ids))
+
+    return [serialize_story(s) for s in stories]
+
+async def get_parent_drafts(email: str):
+    parent = await db.parents.find_one({"email": email})
+    if not parent:
+        raise ParentNotFound("Parent not found")
+
+    story_ids = convert_to_objectid_list(parent.get("drafts", []))
+    print(story_ids)
+
+    stories = await db.stories.find({
+        "_id": {"$in": story_ids},
+        "is_draft": True
+    }).to_list(len(story_ids))
+
+    return [serialize_story(s) for s in stories]
+
+
+
 
 async def get_parents():
     parents = await db.parents.find().to_list(100)
     return obj_id(parents)
-async def get_parent(parent_id: str):
-    parent = await db.parents.find_one({"_id": parent_id})
+
+async def get_parent(email: str):
+    parent = await db.parents.find_one({"email": email})
+    if not parent:
+        raise ParentNotFound()
     return obj_id(parent)
 
-async def delete_parent(parent_id: str):
-    await db.parents.delete_one({"_id": parent_id})
+
+async def delete_parent(email: str):
+    parent=get_parent(email) # make sure the parent exists
+    await db.parents.delete_one({"email": email})
     return {"msg": "Parent deleted"}
-async def update_parent(parent_id: str, data: Parent):
-    await db.parents.update_one({"_id": parent_id}, {"$set": data.dict()})
+
+
+async def update_parent(email: str, data: Parent):
+    parent=get_parent(email)
+    update=await db.parents.update_one({"email": email}, {"$set": data.dict()})
     return {"msg": "Parent updated"}

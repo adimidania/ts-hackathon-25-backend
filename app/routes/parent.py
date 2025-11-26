@@ -45,24 +45,26 @@ async def login_route(LoginData:LoginParentRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{parent_id}/stories")
-async def get_parent_stories_route(parent_id: str):
+@router.get("/{email}/stories")
+async def get_parent_stories_route(email: str):
     try:
-        stories = await get_parent_stories(parent_id)
-        if stories is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Parent not found")
+        stories = await get_parent_stories(email)
+       
         return stories
+    except ParentNotFound as pe:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(pe))
+      
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{parent_id}/drafts")
-async def get_parent_drafts_route(parent_id: str):
+@router.get("/{email}/drafts")
+async def get_parent_drafts_route(email: str):
     try:
-        drafts = await get_parent_drafts(parent_id)
-        if drafts is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Parent not found")
+        drafts = await get_parent_drafts(email)
         return drafts
+    except ParentNotFound as pe:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(pe))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -72,28 +74,26 @@ async def get_parent_drafts_route(parent_id: str):
 async def get_parents_route():
     try:
         parents = await get_parents()
-        if not parents:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No parents found")
         return parents
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{parent_id}")
-async def get_parent_route(parent_id: str):
+@router.get("/{email}")
+async def get_parent_route(email: str):
     try:
-        parent = await get_parent(parent_id)
-        if not parent:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Parent not found")
+        parent = await get_parent(email)
         return parent
+    except ParentNotFound as pe:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(pe))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/{parent_id}")
-async def delete_parent_route(parent_id: str):
+@router.delete("/{email}")
+async def delete_parent_route(email: str):
     try:
-        res = await delete_parent(parent_id)
+        res = await delete_parent(email)
         if res.get("deleted_count", 0) == 0:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Parent not found")
         return {"msg": "Parent deleted"}
@@ -101,10 +101,10 @@ async def delete_parent_route(parent_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.put("/{parent_id}")
-async def update_parent_route(parent_id: str, data: Parent):
+@router.put("/{email}")
+async def update_parent_route(email: str, data: Parent):
     try:
-        res = await update_parent(parent_id, data)
+        res = await update_parent(email, data)
         if res.get("modified_count", 0) == 0:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Parent not found")
         return {"msg": "Parent updated"}

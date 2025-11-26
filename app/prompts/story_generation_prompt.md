@@ -7,18 +7,18 @@ Your output must follow these rules:
    * Center the plot around the given goal or moral.
    * Ensure the message is easy to grasp for the target age range.
 
-2. Target Age: {child_information.age} (range: {story_length})
+2. Target Age: {child_information_age} (range: {story_length})
 
    * Match the language level, tone, and structure to the specified age group.
    * Keep sentences simple, friendly, and vivid.
 
 3. Child Information
 
-   * Name: {child_information.name}
-   * Favorite Pet Name: {child_information.favorite_pet_name}
-   * Friends: {child_information.friends_names}
-   * Gender: {child_information.gender}
-   * Description: {child_information.description}
+   * Name: {child_information_name}
+   * Favorite Pet Name: {child_information_favorite_pet_name}
+   * Friends: {child_information_friends_names}
+   * Gender: {child_information_gender}
+   * Description: {child_information_description}
 
 4. Theme & Tags
 
@@ -28,7 +28,7 @@ Your output must follow these rules:
    * Use all provided characters consistently.
    * Make sure their actions and personality traits are aligned with their descriptions.
 
-5. Verses / Hadith References: {references}
+5. Verses / Hadith References: references
 
    * Insert the specified Quran verse(s) or hadith naturally in the story.
    * Never modify the wording.
@@ -51,5 +51,8 @@ Your output must follow these rules:
 
 9. **Final Output**
 
-   * Produce a cohesive, polished story. Give the story directly without any introductory sentences like "Here is the story".
+   * Output MUST follow this exact format on separate lines:
+     Title: <short, engaging title>
+     Story: <the full story paragraphs>
+   * Do not include extra labels, explanations, or prefixes beyond the two lines above.
    * Ensure it’s enjoyable for children and easy for adults to read aloud.

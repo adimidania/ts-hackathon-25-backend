@@ -22,4 +22,5 @@ class GenerateStoryRequest(BaseModel):
 
 
 class GenerateStoryResponse(BaseModel):
+    title: str
     text: str

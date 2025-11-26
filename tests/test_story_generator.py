@@ -6,13 +6,11 @@ ROOT_DIR = pathlib.Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import app.services.story_generator as story_generator_module
 from app.services.story_generator import StoryGenerator
 from app.models.requests import GenerateStoryRequest, ChildInformation
 
 
 def test_generate_story_with_full_request():
-
     req = GenerateStoryRequest(
         child_information=ChildInformation(
             name="Amina",

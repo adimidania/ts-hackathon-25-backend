@@ -1,4 +1,3 @@
-import os
 import pathlib
 import sys
 
@@ -12,7 +11,7 @@ def test_illustrate_story_pipeline(output_folder: pathlib.Path):
     """
     Run the full illustrate_story pipeline without pytest.
     """
-    si = StoryIllustrator(api_key=os.environ.get("GEMINI_API_KEY"))
+    si = StoryIllustrator()
     story = """
     Amina was sitting quietly in her room, the soft afternoon light streaming through the window. 
     She held her Quran gently in her hands, turning the pages with care. The room was calm, and 

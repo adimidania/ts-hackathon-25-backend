@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class StoryIllustrator:
-    def __init__(self, api_key: str = None, model: str = "gemini-2.5-flash-image-preview"):
+    def __init__(self, model: str = "gemini-2.5-flash-image-preview"):
         self.client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
         self.model = model
 
@@ -67,7 +67,6 @@ class StoryIllustrator:
     def illustrate_story(self, story_text: str, output_prefix: str = "scene"):
         """Main pipeline: split story and generate images for each scene."""
         scene_prompts = self.split_story_into_scenes(story_text)
-        print(len(scene_prompts), "scenes detected.")
         all_images = []
 
         for idx, scene_text in enumerate(scene_prompts):

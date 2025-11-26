@@ -1,14 +1,25 @@
 from pydantic import BaseModel
+from typing import Optional
+
+
+class ChildInformation(BaseModel):
+    name: str
+    favorite_pet_name: Optional[str] = None
+    friends_names: Optional[list[str]] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    description: Optional[str] = None
 
 
 class GenerateStoryRequest(BaseModel):
-    prompt_vars: dict | None = None
+    child_information: ChildInformation
+    story_goal: str
+    tags: Optional[list[str]] = None
+    story_length: str
+    story_theme: str
+    include_islamic_teaching: bool = False
+    additional_instructions: Optional[str] = None
 
-class GenerateImageRequest(BaseModel):
-    prompt: str
 
 class GenerateStoryResponse(BaseModel):
     text: str
-
-class GenerateImageResponse(BaseModel):
-    image_url: str

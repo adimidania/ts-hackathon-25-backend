@@ -9,6 +9,6 @@ MONGO_URL = os.getenv("MONGO_URI")
 client = AsyncIOMotorClient(MONGO_URL)
 db = client.db
 
-# Helper to convert ObjectId to str
 def obj_id(id):
     return str(id)
+

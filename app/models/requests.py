@@ -12,3 +12,15 @@ class GenerateStoryResponse(BaseModel):
 
 class GenerateImageResponse(BaseModel):
     image_url: str
+
+class GenerateAudioRequest(BaseModel):
+    prompt: str
+
+class LoginParentRequest(BaseModel):
+    email: str
+    password: str
+class RegisterParentRequest(BaseModel):
+    email: str
+    full_name: str
+    phone_number: str
+    password: str

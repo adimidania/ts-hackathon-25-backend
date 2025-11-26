@@ -11,5 +11,5 @@ def read_root():
 	return {"status": "ok", "service": "ts-hackathon-backend"}
 
 
-app.include_router(story_router, prefix="/story-generation", tags=["story"])
-app.include_router(image_router, prefix="/image-generation", tags=["image"])
+app.include_router(story_router, prefix="/story", tags=["story"])
+app.include_router(image_router, prefix="/image", tags=["image"])

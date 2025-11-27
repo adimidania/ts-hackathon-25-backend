@@ -24,3 +24,5 @@ class RegisterParentRequest(BaseModel):
     full_name: str
     phone_number: str
     password: str
+
+

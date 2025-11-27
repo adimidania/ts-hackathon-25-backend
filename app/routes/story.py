@@ -21,7 +21,7 @@ async def create_story(story: Story):
     res = await db.stories.insert_one(story.dict())
     return {"id": str(res.inserted_id)}
 
-@router.get("/") #get all
+@router.get("/") 
 async def get_stories():
     stories = await db.stories.find().to_list(100)
     return stories

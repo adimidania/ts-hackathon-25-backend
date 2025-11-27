@@ -24,3 +24,11 @@ class GenerateStoryRequest(BaseModel):
 class GenerateStoryResponse(BaseModel):
     title: str
     text: str
+
+class NarrationRequest(BaseModel):
+    title: str
+    text: str
+
+class NarrationResponse(BaseModel):
+    title: str
+    audio_path: str

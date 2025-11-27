@@ -4,6 +4,7 @@ uvicorn[standard]
 
 # Requirements for AI Development
 google-genai
+elevenlabs
 
 # Additional dependencies
 python-dotenv

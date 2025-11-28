@@ -3,11 +3,12 @@ import time
 import pathlib
 import re
 from typing import Optional
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from elevenlabs.client import ElevenLabs
 
 
-load_dotenv()
+# Load .env robustly regardless of current working directory
+load_dotenv(find_dotenv())
 
 class StoryNarrator:
     """Generate narration audio for a story using ElevenLabs.
@@ -15,13 +16,14 @@ class StoryNarrator:
 
     def __init__(
         self,
-        voice_id: str = "tQ4MEZFJOzsahSEEZtHK",
-        model_id: str = "eleven_multilingual_v2",
+        voice_id: Optional[str] = None,
+        model_id: Optional[str] = None,
         output_format: str = "mp3_44100_128",
     ):
         self.api_key = os.getenv("ELEVENLABS_API_KEY")
-        self.voice_id = voice_id
-        self.model_id = model_id
+        # Allow overriding via env
+        self.voice_id = voice_id or os.getenv("ELEVENLABS_VOICE_ID", "tQ4MEZFJOzsahSEEZtHK")
+        self.model_id = model_id or os.getenv("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
         self.output_format = output_format
         self.output_dir = pathlib.Path("storage/audio")
         self._client = ElevenLabs(api_key=self.api_key) if (self.api_key and ElevenLabs) else None
@@ -32,15 +34,12 @@ class StoryNarrator:
         base_name = f"{safe_title}_{ts}"
         audio_path = self.output_dir / f"{base_name}.mp3"
 
-        # Build text with paragraph pauses using SSML-like break tags
-        # Split on blank lines to detect paragraphs
+        # Build text with simple paragraph separation (avoid SSML tags not supported by ElevenLabs)
         paragraphs = [p.strip() for p in re.split(r"\n\s*\n", story_text.strip()) if p.strip()]
-        sep_tag = f"<break time=\"{pause_seconds:.1f}s\" />"
         if paragraphs:
-            body = f" {sep_tag} ".join(paragraphs)
+            body = ".\n\n".join(paragraphs)
         else:
             body = story_text.strip()
-        # Prepend title for a natural opening
         full_text = f"{title}. {body}".strip()
         try:
             # Ensure output directory exists
@@ -58,6 +57,8 @@ class StoryNarrator:
                 data = b"".join(audio) 
             else:
                 data = audio 
+            if not data:
+                raise RuntimeError("Received empty audio data from ElevenLabs")
             with open(audio_path, "wb") as f:
                 f.write(data)
             return str(audio_path)
@@ -71,8 +72,7 @@ class StoryNarrator:
     def narrate_to_bytes(self, title: str, story_text: str, pause_seconds: float = 1.0) -> bytes:
         """Generate narration and return raw audio bytes without touching the filesystem."""
         paragraphs = [p.strip() for p in re.split(r"\n\s*\n", story_text.strip()) if p.strip()]
-        sep_tag = f"<break time=\"{pause_seconds:.1f}s\" />"
-        body = f" {sep_tag} ".join(paragraphs) if paragraphs else story_text.strip()
+        body = ".\n\n".join(paragraphs) if paragraphs else story_text.strip()
         full_text = f"{title}. {body}".strip()
 
         if not self._client:
@@ -85,7 +85,11 @@ class StoryNarrator:
             output_format=self.output_format,
         )
         if hasattr(audio, "__iter__") and not isinstance(audio, (bytes, bytearray)):
-            return b"".join(audio)  # type: ignore
-        return audio  # type: ignore
+            data = b"".join(audio)  # type: ignore
+        else:
+            data = audio  # type: ignore
+        if not data:
+            raise RuntimeError("Received empty audio data from ElevenLabs")
+        return data
 
 __all__ = ["StoryNarrator"]

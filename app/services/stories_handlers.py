@@ -24,3 +24,9 @@ async def delete_story(story_id: str):
 async def make_draft_story(story_id: str):
     await db.stories.update_one({"_id": ObjectId(story_id)}, {"$set": {"is_draft": False}})
     return await find_story_by_id(story_id)
+
+async def story_images(story_id:str):
+    story= await find_story_by_id()
+    if not story:
+        raise StoryNotFound()
+    

@@ -1,11 +1,11 @@
-# Requirements for the FastAPI application
+# FastAPI server
 fastapi
 uvicorn[standard]
+python-dotenv
 
-# Requirements for AI Development
+# AI packages
 google-genai
 elevenlabs
 
 # Additional dependencies
 python-dotenv
-

@@ -1,34 +1,36 @@
 # TS Hackathon Backend
 
-Minimal FastAPI backend scaffold.
+FastAPI service that:
+1. Generates personalized children's stories (Gemini).
+2. Streams spoken narration audio (ElevenLabs).
 
-## Setup (Windows PowerShell)
-
+---
+## Quick Setup (Windows PowerShell)
 ```powershell
-# 1. Create virtual environment
+# Create & activate virtual env
 python -m venv .venv
-
-# 2. Activate it
 .\.venv\Scripts\Activate.ps1
 
-# 3. Install dependencies
+# Install deps
 pip install -r requirements.txt
 
-# 4. (Optional) Environment variables
-# Copy .env.example to .env and edit
-copy .env.example .env
-
-# Or set temporary variable for current session:
+# (Optional) set env var for current session
 $env:GOOGLE_GEMINI_API_KEY = "your_key_here"
+$env:ELEVENLABS_API_KEY = "your_key_here"
 
-# 5. Run server
+# Run API (default: http://127.0.0.1:8000)
 uvicorn app.main:app --reload --port 8000
 ```
+Docs UI: http://127.0.0.1:8000/docs
 
-Visit: http://127.0.0.1:8000/docs
+Run tests:
+```powershell
+pytest -q
+```
 
-## Environment File
-Edit `.env` (copied from `.env.example`):
+---
+## Minimal .env
 ```
 GOOGLE_GEMINI_API_KEY=your_key_here
+ELEVENLABS_API_KEY=your_key_here
 ```

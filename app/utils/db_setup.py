@@ -1,4 +1,3 @@
-from gym import Env
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import os

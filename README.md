@@ -1,6 +1,7 @@
-# TS Hackathon 25 — Backend
+# Hikayah
 
-FastAPI backend that generates kids’ stories, illustrates scenes as images, and narrates audio on-the-fly. It exposes simple REST endpoints for:
+![alt text](image.png)
+This backend is a FastAPI API that generates kids’ stories, illustrates scenes as images, and narrates audio on-the-fly. It exposes simple REST endpoints for:
 - Creating and listing stories
 - Generating scene illustrations (ZIP or base64)
 - Streaming narration audio (MP3)
@@ -59,18 +60,13 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Root health check:
-- GET `http://localhost:8000/` → `{ "status": "ok", "service": "ts-hackathon-backend" }`
+- GET `BASE_URL/` → `{ "status": "ok", "service": "ts-hackathon-backend" }`
 
 Interactive docs:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+- Swagger UI: `BASE_URL/docs`
+- ReDoc: `BASE_URL/redoc`
 
-Static storage:
-- Mounted at `http://localhost:8000/storage`
 
-## API Endpoints
-
-Base path: `http://localhost:8000`
 
 ### Parent (`/parent`)
 - `POST /parent/register` → Register a parent
@@ -138,18 +134,6 @@ curl -X POST "http://localhost:8000/narration/generate" \
 	}' --output narration.mp3
 ```
 
-## Testing
-Run unit tests:
-```powershell
-python -m pytest -q
-```
-
-Focused runs:
-```powershell
-python -m pytest tests/test_story_generator.py -q
-python -m pytest tests/test_story_illustrator.py -q
-python -m pytest tests/test_story_narrator.py -q
-```
 
 ## Development Notes
 - Prompts live in `app/prompts/` and can be tuned.
@@ -188,10 +172,11 @@ $env:GOOGLE_GEMINI_API_KEY = "your_key_here"
 uvicorn app.main:app --reload --port 8000
 ```
 
-Visit: http://127.0.0.1:8000/docs
 
 ## Environment File
 Edit `.env` (copied from `.env.example`):
 ```
-GOOGLE_GEMINI_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
+ELEVENLABS_API_KEY=your_elevenlabs_key_here
+MONGO_URI=DATABASE_URI_HERE
 ```

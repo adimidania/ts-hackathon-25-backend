@@ -1,6 +1,5 @@
-# Hikayah
-
 ![alt text](image.png)
+
 This backend is a FastAPI API that generates kids’ stories, illustrates scenes as images, and narrates audio on-the-fly. It exposes simple REST endpoints for:
 - Creating and listing stories
 - Generating scene illustrations (ZIP or base64)

@@ -1,6 +1,169 @@
-# TS Hackathon Backend
+# TS Hackathon 25 — Backend
 
-Minimal FastAPI backend scaffold.
+FastAPI backend that generates kids’ stories, illustrates scenes as images, and narrates audio on-the-fly. It exposes simple REST endpoints for:
+- Creating and listing stories
+- Generating scene illustrations (ZIP or base64)
+- Streaming narration audio (MP3)
+- Managing parent accounts and their stories/drafts
+
+Built with FastAPI, Pydantic, and async MongoDB access patterns.
+
+## Tech Stack
+- FastAPI for HTTP APIs
+- Pydantic for request/response models
+- Async DB access via `app.utils.db_setup`
+- Python 3.10+ recommended
+
+## Project Structure
+- `app/main.py`: FastAPI app setup and router mounting
+- `app/routes/`: HTTP endpoints
+	- `parent.py`: Register/login, CRUD, and story/draft access for parents
+	- `story.py`: Generate text, create stories, list stories
+	- `illustrator.py`: Generate scene images (ZIP or base64)
+	- `narration.py`: Generate and stream narration MP3
+	- `image.py`: Image-related routes (if used)
+- `app/services/`: Core logic for generation and handlers
+- `app/models/`: Pydantic models and DB schemas
+- `app/prompts/`: LLM prompts for story and illustration generation
+- `app/utils/`: Auth, DB setup, prompt loader, seed utilities
+- `storage/`: Static storage mounted at `/storage`
+- `tests/`: Unit tests for generator, illustrator, narrator
+
+## Setup
+1. Ensure Python is installed (`python --version`).
+2. Create and activate a virtual environment (Windows PowerShell):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+3. Install dependencies:
+
+```powershell
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+4. Configure environment variables if required (DB connection, API keys). Common examples:
+- `MONGODB_URI` or similar in `app/utils/db_setup.py`
+- Image/Narration providers keys if used in services
+
+Add them to your shell session or a `.env` loader if implemented.
+
+## Run
+Start the FastAPI server with Uvicorn:
+
+```powershell
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Root health check:
+- GET `http://localhost:8000/` → `{ "status": "ok", "service": "ts-hackathon-backend" }`
+
+Interactive docs:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+Static storage:
+- Mounted at `http://localhost:8000/storage`
+
+## API Endpoints
+
+Base path: `http://localhost:8000`
+
+### Parent (`/parent`)
+- `POST /parent/register` → Register a parent
+	- Body: `{ email, full_name, phone_number, password }`
+- `POST /parent/login` → Login
+	- Body: `{ email, password }`
+- `GET /parent/{email}/stories` → List parent’s stories
+- `GET /parent/{email}/drafts` → List parent’s drafts
+- `GET /parent/` → List all parents
+- `GET /parent/{email}` → Get parent
+- `DELETE /parent/{email}` → Delete parent
+- `PUT /parent/{email}` → Update parent (body: `Parent` model)
+
+### Story (`/story`)
+- `POST /story/generate` → Generate a story
+	- Body: `GenerateStoryRequest` (see models)
+	- Response: `{ title, text }`
+- `POST /story/create` → Persist a story
+	- Body: `{ email, title, paragraph }`
+	- Response: `{ storyId }`
+- `GET /story/` → List stories (first 100)
+
+### Illustration (`/illustration`)
+- `POST /illustration/generate` → Generate scene images
+	- Body: `{ text, max_scenes?, output? }` (`output`: `zip`|`base64`, default `zip`)
+	- Response:
+		- `zip`: application/zip download `story_images.zip`
+		- `base64`: `{ images: ["data:image/png;base64,..."] }`
+
+### Narration (`/narration`)
+- `POST /narration/generate` → Stream MP3 for provided title/text
+- `GET  /narration/stream?title=...&text=...` → Stream MP3
+
+## Quick Usage Examples
+
+Generate a story:
+```powershell
+curl -X POST "http://localhost:8000/story/generate" \
+	-H "Content-Type: application/json" \
+	-d '{
+		"age": 7,
+		"theme": "adventure",
+		"keywords": ["forest","friendly dragon"],
+		"language": "en"
+	}'
+```
+
+Illustrate scenes (ZIP):
+```powershell
+curl -X POST "http://localhost:8000/illustration/generate" \
+	-H "Content-Type: application/json" \
+	-d '{
+		"text": "Chapter 1...",
+		"output": "zip"
+	}' --output story_images.zip
+```
+
+Narrate audio:
+```powershell
+curl -X POST "http://localhost:8000/narration/generate" \
+	-H "Content-Type: application/json" \
+	-d '{
+		"title": "A Brave Day",
+		"text": "Once upon a time..."
+	}' --output narration.mp3
+```
+
+## Testing
+Run unit tests:
+```powershell
+python -m pytest -q
+```
+
+Focused runs:
+```powershell
+python -m pytest tests/test_story_generator.py -q
+python -m pytest tests/test_story_illustrator.py -q
+python -m pytest tests/test_story_narrator.py -q
+```
+
+## Development Notes
+- Prompts live in `app/prompts/` and can be tuned.
+- DB setup in `app/utils/db_setup.py`; ensure your connection string.
+- Static files available under `/storage`.
+
+## Contributing
+- Fork and create a feature branch
+- Keep changes minimal and focused
+- Add tests for new functionality when feasible
+- Open a PR with a clear description
+
+## License
+This repository’s license is defined by the project owner. If unspecified, please consult the maintainers before redistribution.
 
 ## Setup (Windows PowerShell)
 

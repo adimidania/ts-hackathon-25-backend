@@ -3,15 +3,28 @@ from fastapi import APIRouter
 from app.models.requests import GenerateStoryRequest, GenerateStoryResponse
 from app.services.story_generator import StoryGenerator
 from ..models.story import Story
-
+from ..services.stories_handlers import get_stories_images
 from ..utils.db_setup import db
-
+from fastapi import HTTPException
+from ..services.exceptions import StoryNotFound
 router = APIRouter()
 
-@router.post("/generate", response_model=GenerateStoryResponse)
-def generate_story_route(payload: GenerateStoryRequest):
-    text = StoryGenerator(prompt_vars=payload.prompt_vars)
-    return GenerateStoryResponse(text=text)
+
+
+
+@router.get("/{story_id}/images")
+async def find_images_story_route(story_id:str):
+    try:
+        print("getting images")
+        images= await get_stories_images(story_id)
+        return images
+
+    except StoryNotFound as sf:
+        raise HTTPException(status_code=404,detail=str(sf))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
 
 @router.post("/create")

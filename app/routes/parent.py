@@ -17,6 +17,7 @@ from ..models.requests import LoginParentRequest,RegisterParentRequest
 router = APIRouter()
 
 
+#tested
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_parent_route(data: RegisterParentRequest):
     try:
@@ -28,7 +29,7 @@ async def register_parent_route(data: RegisterParentRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+# tested
 @router.post("/login")
 async def login_route(LoginData:LoginParentRequest):
     try:
@@ -44,7 +45,7 @@ async def login_route(LoginData:LoginParentRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+#tested
 @router.get("/{email}/stories")
 async def get_parent_stories_route(email: str):
     try:

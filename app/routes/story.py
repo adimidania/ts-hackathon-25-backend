@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
-from app.models.requests import GenerateStoryRequest, GenerateStoryResponse
+from app.models.requests import GenerateStoryRequest, GenerateStoryResponse, StoryCreationRequest
 from app.services.story_generator import StoryGenerator
 from ..models.story import Story
-
+from app.services.stories_handlers import create_story
 from ..utils.db_setup import db
 
 router = APIRouter()
@@ -16,9 +16,10 @@ def generate_story_route(payload: GenerateStoryRequest):
 
 
 @router.post("/create")
-async def create_story(story: Story):
-    res = await db.stories.insert_one(story.dict())
-    return {"id": str(res.inserted_id)}
+async def create_story_route(story: StoryCreationRequest):
+    creation= await create_story(story.email,story.title,story.paragraph)
+    return creation
+
 
 @router.get("/") 
 async def get_stories():

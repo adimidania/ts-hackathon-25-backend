@@ -64,9 +64,12 @@ class RegisterParentRequest(BaseModel):
     password: str
 
 
-
+class StoryCreationRequest(BaseModel):
+    title: str
+    paragraph:str
 
 
 class NarrationResponse(BaseModel):
+    email: str
     title: str
     audio_path: str

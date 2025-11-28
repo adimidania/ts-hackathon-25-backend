@@ -16,8 +16,8 @@ def read_root():
 
 
 app.include_router(parent_router, prefix="/parent", tags=["parent"])
-app.include_router(story_router, prefix="/story", tags=["story"])
 app.include_router(image_router, prefix="/image", tags=["image"])
-app.include_router(narration_router, tags=["narration"])
+app.include_router(narration_router,prefix='/narration',tags=["narration"])
+app.include_router(story_router, prefix="/story", tags=["story"])
 
 app.mount("/storage", StaticFiles(directory="storage"), name="storage")

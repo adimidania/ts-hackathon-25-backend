@@ -33,27 +33,18 @@ class StoryGenerator:
         formatted_prompt = tpl.format(**flat)
 
         api_key = os.environ.get("GEMINI_API_KEY")
-        if not api_key:
-            # Offline fallback: synthesize a simple title and story from inputs
-            title = f"{request.story_theme.title()} for {request.child_information.name}"
-            text = (
-                f"Story Goal: {request.story_goal}\n"
-                f"Child: {child.name}. Description: {child.description or ''}.\n"
-                f"Theme: {request.story_theme}. Tags: {', '.join(request.tags or [])}.\n\n"
-                f"(Offline mode: No API key provided.)"
-            )
-            return title, text
 
         try:
             response = self.client.models.generate_content(
                 model=self.model,
                 contents=formatted_prompt,
             )
+            print(response)
             raw = getattr(response, "text", "") or ""
             title, text = self._extract_title_and_story(raw)
+            print(title,text)
             return title, text
         except Exception:
-            # Graceful degradation
             return "Untitled", formatted_prompt + "\n\n(Error calling model; returned formatted prompt.)"
 
     @staticmethod

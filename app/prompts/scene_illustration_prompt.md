@@ -8,4 +8,3 @@ Rules:
 - Never depict Allah, Prophets, Companions, or angels.
 - Dress all characters in modest clothing.
 - Avoid impermissible or culturally insensitive elements such as alcohol, pork products, gambling imagery, offensive symbols, or superstitious/magical effects that contradict Islamic beliefs.
-

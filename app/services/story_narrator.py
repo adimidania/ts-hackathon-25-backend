@@ -2,10 +2,8 @@ import os
 import time
 import pathlib
 import re
-from typing import Optional
 from dotenv import load_dotenv
 from elevenlabs.client import ElevenLabs
-
 
 load_dotenv()
 

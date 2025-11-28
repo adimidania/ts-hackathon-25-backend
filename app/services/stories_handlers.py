@@ -1,10 +1,11 @@
 from ..utils.db_setup import db, obj_id
 from bson import ObjectId
+from .exceptions import StoryNotFound
 
 async def find_story_by_id(story_id: str):
     story = await db.stories.find_one({"_id": ObjectId(story_id)})
     if not story:
-        return None
+        raise  StoryNotFound()
     return obj_id(story)
 
 async def create_story(story_data: dict):

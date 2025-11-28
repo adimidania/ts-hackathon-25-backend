@@ -16,3 +16,8 @@ class IncorrectPassword(BaseException):
     def __init__(self, message="Incorrect password"):
         self.message = message
         super().__init__(self.message)
+class StoryNotFound(BaseException):
+    """Raised when a story with the given ID does not exist."""
+    def __init__(self, message="Story with this ID does not exist"):
+        self.message = message
+        super().__init__(self.message)

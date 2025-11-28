@@ -65,11 +65,11 @@ class RegisterParentRequest(BaseModel):
 
 
 class StoryCreationRequest(BaseModel):
+    email: str
     title: str
     paragraph:str
 
 
 class NarrationResponse(BaseModel):
-    email: str
     title: str
     audio_path: str

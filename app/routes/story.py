@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.models.requests import GenerateStoryRequest, GenerateStoryResponse, StoryCreationRequest
 from app.services.story_generator import StoryGenerator
@@ -17,9 +17,14 @@ def generate_story_route(payload: GenerateStoryRequest):
 
 @router.post("/create")
 async def create_story_route(story: StoryCreationRequest):
-    creation= await create_story(story.email,story.title,story.paragraph)
-    return creation
+    try:
 
+        creation= await create_story(story.email,story.title,story.paragraph)
+        return {
+            "storyId":creation
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=e)
 
 @router.get("/") 
 async def get_stories():

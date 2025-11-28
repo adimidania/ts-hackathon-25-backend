@@ -51,7 +51,7 @@ Your output must follow these rules:
    * Maintain an engaging, imaginative, gentle tone.
    * Avoid anything frightening, violent, or inappropriate for children.
 
-9. Final Output**
+9. Final Output
 
    * Output MUST follow this exact format on separate lines:
      Title: <short, engaging title>

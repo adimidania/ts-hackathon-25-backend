@@ -37,7 +37,7 @@ class GenerateImageResponse(BaseModel):
 
 class GenerateImageRequest(BaseModel):
     prompt: str
-    
+
 class GenerateAudioRequest(BaseModel):
     prompt: str
 

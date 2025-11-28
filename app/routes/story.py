@@ -9,6 +9,10 @@ from fastapi import HTTPException
 from ..services.exceptions import StoryNotFound
 router = APIRouter()
 
+@router.post("/generate", response_model=GenerateStoryResponse)
+def generate_story_route(payload: GenerateStoryRequest):
+    title,text = StoryGenerator().generate_story(payload)
+    return GenerateStoryResponse(title=title,text=text)
 
 
 

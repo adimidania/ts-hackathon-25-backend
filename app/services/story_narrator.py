@@ -6,8 +6,6 @@ from typing import Optional
 from dotenv import load_dotenv, find_dotenv
 from elevenlabs.client import ElevenLabs
 
-
-# Load .env robustly regardless of current working directory
 load_dotenv(find_dotenv())
 
 class StoryNarrator:

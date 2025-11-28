@@ -1,9 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.routes.story import router as story_router
 from app.routes.narration import router as narration_router
 from app.routes.illustration import router as illustration_router
 
 app = FastAPI(title="TS Hackathon Backend", version="0.1.0")
+
+app.add_middleware(
+	CORSMiddleware,
+	allow_origins=["*"],
+	allow_credentials=True,
+	allow_methods=["*"],
+	allow_headers=["*"],
+)
 
 
 @app.get("/")

@@ -84,3 +84,32 @@ class StoryIllustrator:
             all_images.extend(images)
 
         return all_images
+
+    def generate_images_to_bytes(self, story_text: str) -> list[bytes]:
+        """Generate images for each scene from story text and return raw bytes.
+        Does not write to storage.
+        """
+        if not self.client:
+            raise RuntimeError("Gemini client not initialized (missing GEMINI_API_KEY)")
+
+        scene_prompts = self.split_story_into_scenes(story_text)
+        out: list[bytes] = []
+
+        for idx, scene_text in enumerate(scene_prompts):
+            prompt = (load_prompt("scene_illustration_prompt.md") or "{scene_text}").replace("{scene_text}", scene_text)
+
+            parts = [types.Part.from_text(text=prompt)]
+            contents = [types.Content(role="user", parts=parts)]
+            generate_config = types.GenerateContentConfig(response_modalities=["IMAGE", "TEXT"])
+
+            for chunk in self.client.models.generate_content_stream(
+                model=self.model,
+                contents=contents,
+                config=generate_config,
+            ):
+                if not chunk.candidates or not chunk.candidates[0].content.parts:
+                    continue
+                part = chunk.candidates[0].content.parts[0]
+                if getattr(part, "inline_data", None) and part.inline_data.data:
+                    out.append(part.inline_data.data)
+        return out

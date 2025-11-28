@@ -32,8 +32,6 @@ class StoryGenerator:
         }
         formatted_prompt = tpl.format(**flat)
 
-        api_key = os.environ.get("GEMINI_API_KEY")
-
         try:
             response = self.client.models.generate_content(
                 model=self.model,

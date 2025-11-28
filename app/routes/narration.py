@@ -19,13 +19,13 @@ def generate_narration(payload: NarrationRequest):
     return StreamingResponse(iter([audio_bytes]), media_type="audio/mpeg", headers=headers)
 
 
-@router.get("/stream")
-def stream_narration(title: str, text: str):
+@router.post("/stream")
+def stream_narration(payload: NarrationRequest):
     narrator = StoryNarrator()
     try:
-        audio_bytes = narrator.narrate_to_bytes(title, text)
+        audio_bytes = narrator.narrate_to_bytes(payload.title, payload.text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to generate narration: {e}")
-    filename = f"{title.replace(' ', '_')[:40] or 'story'}.mp3"
+    filename = f"{payload.title.replace(' ', '_')[:40] or 'story'}.mp3"
     headers = {"Content-Disposition": f"inline; filename={filename}"}
     return StreamingResponse(iter([audio_bytes]), media_type="audio/mpeg", headers=headers)

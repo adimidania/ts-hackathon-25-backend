@@ -5,7 +5,8 @@ app/.env
 # Virtual environments
 venv/
 .venv/
-
+services/__pycache__
+routes/__pycache__
 # Python cache
 __pycache__/
 *.pyc
